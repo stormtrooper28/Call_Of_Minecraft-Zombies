@@ -5,8 +5,7 @@ import org.bukkit.Material;
 
 import com.zombies.game.Game;
 
-public class SpawnPoint
-{
+public class SpawnPoint {
 
 	private Location loc;
 	private Game game;
@@ -14,46 +13,38 @@ public class SpawnPoint
 	private int number;
 	private String name;
 
-	public SpawnPoint(Location loc, Game game, Material material, String name)
-	{
+	public SpawnPoint(Location loc, Game game, Material material, String name) {
 		this.game = game;
 		this.loc = loc;
 		mat = material;
 		this.name = name;
 	}
 
-	public int getNumber()
-	{
+	public int getNumber() {
 		return number;
 	}
 
-	public Location getLocation()
-	{
+	public Location getLocation() {
 		return loc;
 	}
 
-	public Game getGame()
-	{
+	public Game getGame() {
 		return game;
 	}
 
-	public void setMaterial(Material mat)
-	{
+	public void setMaterial(Material mat) {
 		this.mat = mat;
 	}
 
-	public Material getMaterial()
-	{
+	public Material getMaterial() {
 		return mat;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return "<SpawnPoint: " + game.getName() + "> LOC X: " + loc.getBlockX() + ", Y: " + loc.getBlockY() + ", Z: " + loc.getBlockZ() + "| Material: " + mat.toString() + "> Name " + name;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 }

@@ -1,18 +1,18 @@
 package com.zombies.config;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 import com.zombies.guns.GunType;
 import com.zombies.guns.GunTypeEnum;
 import com.zombies.leaderboards.PlayerStats;
 
-public class ConfigSetup
-{
+public class ConfigSetup {
 	/**
 	 * Field used to get configuration.
 	 */
-	COMZombies plugin;
+	COMZombiesMain plugin;
 	/**
 	 * Weather or not to spawn multiple MysteryBoxes
 	 */
@@ -88,7 +88,7 @@ public class ConfigSetup
 	 */
 	public int maxPerks;
 	
-	public int KillMoney;
+	public double KillMoney;
 	
 	//public int PistolMaterial;
 	
@@ -96,11 +96,10 @@ public class ConfigSetup
 	 * Instantiates the plugin field as the main class and assigns correct
 	 * values to every other field using setup().
 	 * 
-	 * @param main
+	 * @param instance
 	 *            class
 	 */
-	public ConfigSetup(COMZombies instance)
-	{
+	public ConfigSetup(COMZombiesMain instance) {
 		plugin = instance;
 		Setup();
 	}
@@ -108,8 +107,7 @@ public class ConfigSetup
 	/**
 	 * Main method to assign values to every field.
 	 */
-	public void Setup()
-	{
+	public void Setup() {
 		CustomConfig conf = plugin.configManager.getConfig("GunConfig");
 		MultiBox = plugin.getConfig().getBoolean("config.gameSettings.MultipleMysteryBoxes");
 		doublePointsTimer = plugin.getConfig().getInt("config.gameSettings.doublePointsTimer");
@@ -124,20 +122,17 @@ public class ConfigSetup
 		reviveRange = plugin.getConfig().getInt("config.ReviveSettings.ReviveRange");
 		if (reviveRange > 6)
 			reviveRange = 6;
-		meleeRange = plugin.getConfig().getFloat("config.ReviveSettings.MeleeRange");
+		meleeRange = (float) plugin.getConfig().getDouble("config.ReviveSettings.MeleeRange");
 		configVersion = plugin.getConfig().getString("vID");
 		reloadTime = plugin.getConfig().getInt("config.gameSettings.reloadTime");
-		if (plugin.possibleGuns.size() != 0)
-		{
+		if (plugin.possibleGuns.size() != 0) {
 			plugin.possibleGuns.clear();
 		}
 		
-		for (String group : conf.getConfigurationSection("Guns").getKeys(false))
-		{
-			for (String gun : conf.getConfigurationSection("Guns." + group).getKeys(false))
-			{
-				String item = conf.getString("Guns." + group + "." + gun + ".Item", GunTypeEnum.getGun(group).getMaterial().name());
-				Material gunItem = (item == null || Material.getMaterial(item) == null) ? GunTypeEnum.getGun(group).getMaterial() : Material.getMaterial(item);
+		for (String group : conf.getConfigurationSection("Guns").getKeys(false)) {
+			for (String gun : conf.getConfigurationSection("Guns." + group).getKeys(false)) {
+				//String item = conf.getString("Guns." + group + "." + gun + ".Item", GunTypeEnum.getGun(group).getMaterial().name());
+				//Material gunItem = (item == null || Material.getMaterial(item) == null) ? GunTypeEnum.getGun(group).getMaterial() : Material.getMaterial(item);
 				String ammo = conf.getString("Guns." + group + "." + gun + ".Ammo");
 				String packAmmo = conf.getString("Guns." + group + "." + gun + ".PackAPunch.Ammo");
 				int clipAmmo = Integer.parseInt(ammo.substring(0, ammo.indexOf("/")));
@@ -149,7 +144,8 @@ public class ConfigSetup
 				int pTotal = Integer.parseInt(packAmmo.substring(packAmmo.indexOf("/") + 1));
 				int packDamage = conf.getInt("Guns." + group + "." + gun + ".PackAPunch.Damage");
 				String packGunName = conf.getString("Guns." + group + "." + gun + ".PackAPunch.Name");
-				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, gunItem, damage, fireDelay, speed, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
+
+				plugin.possibleGuns.add(new GunType(GunTypeEnum.getGun(group), gun, GunTypeEnum.getGun(group).getMaterial(), damage, fireDelay, speed, clipAmmo, totalAmmo, pClip, pTotal, packDamage, packGunName));
 			}
 		}
 		maxAmmo = plugin.getConfig().getBoolean("config.Perks.MaxAmmo");
@@ -163,20 +159,15 @@ public class ConfigSetup
 		doublePoints = plugin.getConfig().getBoolean("config.Perks.DoublePoints");
 		arenaStartTime = plugin.getConfig().getInt("config.gameSettings.arenaStartTime");
 		maxPerks = plugin.getConfig().getInt("config.Perks.maxPerks");
-		KillMoney = plugin.getConfig().getInt("config.Economy.MoneyPerKill");
+		KillMoney = plugin.getConfig().getDouble("config.Economy.MoneyPerKill");
 		//PistolMaterial = plugin.getConfig().getInt("config.Guns.PistolMaterial");
-		
-		try
-		{
+
+        if(plugin.configManager.getConfig("kills").contains("kills")) {
 			CustomConfig killsconf = plugin.configManager.getConfig("kills");
-			for(String a : killsconf.getConfigurationSection("Kills").getKeys(true))
-			{
-				PlayerStats stat = new PlayerStats(a, killsconf.getInt("Kills." + a));
+			for (String a : killsconf.getConfigurationSection("kills").getKeys(true)) {
+				PlayerStats stat = new PlayerStats(a, killsconf.getInt("kills." + a));
 				plugin.leaderboards.addPlayerStats(stat);
 			}
-		}catch(NullPointerException e)
-		{
-			
 		}
 	}
 }

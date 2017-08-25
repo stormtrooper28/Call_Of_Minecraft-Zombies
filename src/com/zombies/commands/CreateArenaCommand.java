@@ -3,33 +3,26 @@ package com.zombies.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 import com.zombies.game.Game;
 
-public class CreateArenaCommand implements SubCommand
-{
+public class CreateArenaCommand implements SubCommand {
 
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
-	public CreateArenaCommand(ZombiesCommand cmd)
-	{
+	public CreateArenaCommand(ZombiesCommand cmd) {
 		plugin = cmd.plugin;
 	}
 
-	public boolean onCommand(Player player, String[] args)
-	{
-		if (player.hasPermission("zombies.createarena") || player.hasPermission("zombies.admin"))
-		{
-			if (args.length == 1)
-			{
+	public boolean onCommand(Player player, String[] args) {
+		if (player.hasPermission("zombies.createarena") || player.hasPermission("zombies.admin")) {
+			if (args.length == 1) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please specify an arena name!");
 				return true;
 			}
-			else
-			{
+			else {
 				String secondArg = args[1];
-				if (plugin.manager.isValidArena(secondArg))
-				{
+				if (plugin.manager.isValidArena(secondArg)) {
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This arena already exists!");
 					return true;
 				}
@@ -46,8 +39,7 @@ public class CreateArenaCommand implements SubCommand
 				return true;
 			}
 		}
-		else
-		{
+		else {
 			plugin.command.noPerms(player, "create an arena");
 			return true;
 		}

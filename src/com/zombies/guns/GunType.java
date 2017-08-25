@@ -2,11 +2,10 @@ package com.zombies.guns;
 
 import org.bukkit.Material;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 
-public class GunType
-{
-    public COMZombies plugin;
+public class GunType {
+    public COMZombiesMain plugin;
 	public String name;
 	public GunTypeEnum type;
 	public Material gunItem;
@@ -20,8 +19,7 @@ public class GunType
 	public int packAPunchDamage;
 	public String packAPunchName;
 
-	public GunType(GunTypeEnum type, String gunName, Material gunItem, int damage, int fireDelay, double speed, int clipammo, int totalammo, int packClip, int packTotal, int packDamage, String packName)
-	{
+	public GunType(GunTypeEnum type, String gunName, Material gunItem, int damage, int fireDelay, double speed, int clipammo, int totalammo, int packClip, int packTotal, int packDamage, String packName) {
 		this.damage = damage;
 		this.fireDelay = fireDelay;
 		this.speed = speed;
@@ -36,8 +34,7 @@ public class GunType
 		this.packAPunchName = packName;
 	}
 
-	public void updateAmmo(int clip, int total)
-	{
+	public void updateAmmo(int clip, int total) {
 		clipammo = clip;
 		totalammo = total;
 	}
@@ -47,8 +44,7 @@ public class GunType
 	 * 
 	 * @return: Material corresponding to the guns type
 	 */
-	public Material categorizeGun()
-	{
+	public Material categorizeGun() {
 		return this.gunItem;
 	}
 }

@@ -2,53 +2,43 @@ package com.zombies.commands;
 
 import java.util.ArrayList;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
 import com.zombies.game.Game;
 import com.zombies.spawning.SpawnPoint;
 
-public class DeleteSpawnCommand implements SubCommand
-{
+public class DeleteSpawnCommand implements SubCommand {
 
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
-	public DeleteSpawnCommand(ZombiesCommand pl)
-	{
+	public DeleteSpawnCommand(ZombiesCommand pl) {
 		this.plugin = pl.plugin;
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args)
-	{
-		if (player.hasPermission("zombies.deletespawns") || player.hasPermission("zombies.admin"))
-		{
-			if (args.length == 1)
-			{
+	public boolean onCommand(Player player, String[] args) {
+		if (player.hasPermission("zombies.deletespawns") || player.hasPermission("zombies.admin")) {
+			if (args.length == 1) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify an arena to remove spawns from!");
 				return true;
 			}
-			else
-			{
+			else {
 				String arena = args[1];
-				if (plugin.manager.isValidArena(arena))
-				{
+				if (plugin.manager.isValidArena(arena)) {
 					Game game = plugin.manager.getGame(arena);
 					ArrayList<SpawnPoint> spawns = game.spawnManager.getPoints();
-					if (spawns.size() == 0)
-					{
+					if (spawns.size() == 0) {
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This game has no spawns!");
 						return true;
 					}
-					if (plugin.isRemovingSpawns.containsKey(player))
-					{
+					if (plugin.isRemovingSpawns.containsKey(player)) {
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "You are already in spawn removal!");
 					}
-					for (SpawnPoint point : spawns)
-					{
+					for (SpawnPoint point : spawns) {
 						Block block = point.getLocation().getBlock();
 						point.setMaterial(block.getType());
 						block.setType(Material.ENDER_PORTAL_FRAME);
@@ -64,8 +54,7 @@ public class DeleteSpawnCommand implements SubCommand
 				return true;
 			}
 		}
-		else
-		{
+		else {
 			plugin.command.noPerms(player, "remove spawns");
 			return true;
 		}

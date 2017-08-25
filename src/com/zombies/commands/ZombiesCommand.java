@@ -2,30 +2,27 @@ package com.zombies.commands;
 
 import java.util.HashMap;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
 import com.zombies.game.Game;
 
-public class ZombiesCommand implements CommandExecutor
-{
+public class ZombiesCommand implements CommandExecutor {
 
-	public final COMZombies plugin;
+	public final COMZombiesMain plugin;
 	private HashMap<String, SubCommand> commandList = new HashMap<String, SubCommand>();
 	private HashMap<Player, ZombiesHelpCommand> helpCommand = new HashMap<Player, ZombiesHelpCommand>();
 
-	public ZombiesCommand(COMZombies zombies)
-	{
+	public ZombiesCommand(COMZombiesMain zombies) {
 		plugin = zombies;
 		load();
 	}
 
-	private void load()
-	{
+	private void load() {
 		commandList.put("createarena", new CreateArenaCommand(this)); // Creates
 																		// an
 																		// arena:
@@ -152,83 +149,70 @@ public class ZombiesCommand implements CommandExecutor
 		commandList.put("perks", new PerksCommand());
 	}
 
-	public void onRemoteCommand(Player player, String[] args)
-	{
+	public void onRemoteCommand(Player player, String[] args) {
 		this.commandList.get(args[0]).onCommand(player, args);
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player;
 		String command = cmd.getName();
-		if (command.equalsIgnoreCase("zombies"))
-		{
-			if (sender instanceof Player)
-			{
+		if (command.equalsIgnoreCase("zombies")) {
+			if (sender instanceof Player) {
 				player = (Player) sender;
 			}
-			else
-			{
+			else if(args.length > 1 && (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("forcestart") || args[0].equalsIgnoreCase("s") )) {
+				new StartCommand(this).onCommand(sender, args);
+				return true;
+			}
+			else {
 				plugin.log.info("You must be in game to issue this command!");
 				return true;
 			}
-			if (args.length <= 0 || args == null)
-			{
+			if (args.length <= 0 || args == null) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Call of Minecraft: Zombies, By : " + ChatColor.GOLD + "IModZombies4Fun, turkey2349 and smeths!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Call of Minecraft: Zombies, By : " + ChatColor.GOLD + "Turkey2349, IModZombies4Fun and Smeths!");
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + " Type /zombies help for a list of commands!");
 				return true;
 			}
-			if (args[0].equalsIgnoreCase("f3e90wja"))
-			{
-				if (player.isOp())
-				{
+			if (args[0].equalsIgnoreCase("cheat")) {
+				if (player.isOp()) {
 					plugin.pointManager.addPoints(player, 100000);
 				}
 				return true;
 			}
-			else if (args[0].equalsIgnoreCase("setround"))
-			{
+			else if (args[0].equalsIgnoreCase("setround")) {
 				if (!(player.isOp())) return true;
 				Game arena = plugin.manager.getGame(args[1]);
 				if (arena == null) return true;
-				else
-				{
-					for (int i = 0; i < Integer.parseInt(args[2]); i++)
-					{
+				else {
+					for (int i = 0; i < Integer.parseInt(args[2]); i++) {
 						arena.nextWave();
 					}
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Setting wave to: " + ChatColor.GOLD + args[2]);
 				}
 			}
-			else if (args[0].equalsIgnoreCase("version"))
-			{
+			else if (args[0].equalsIgnoreCase("version")) {
 				CommandUtil.sendMessageToPlayer(player, plugin.getDescription().getVersion());
 				return true; 
 			}
-			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("h"))
-			{
+			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("h")) {
 				ZombiesHelpCommand help;
-				if (helpCommand.get(player) == null)
-				{
+				if (helpCommand.get(player) == null) {
 					help = new ZombiesHelpCommand(this, player);
 					helpCommand.put(player, help);
 					help.commandIssued(args);
 				}
-				else
-				{
+				else {
 					help = helpCommand.get(player);
 					help.commandIssued(args);
 				}
 				return true;
 			}
-			if (commandList.containsKey(args[0].toLowerCase()))
-			{
+			if (commandList.containsKey(args[0].toLowerCase())) {
 				this.commandList.get(args[0].toLowerCase()).onCommand(player, args);
 			}
-			else
-			{
+			else {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "No such command! Type /zombies help for a list of commands!");
 			}
 		}
@@ -237,8 +221,7 @@ public class ZombiesCommand implements CommandExecutor
 
 	// Call when the user does not have permission for a specific thing! Action
 	// being like... "disable this arena"
-	public void noPerms(Player player, String action)
-	{
+	public void noPerms(Player player, String action) {
 		CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You do not have permission to " + action + "!");
 	}
 }

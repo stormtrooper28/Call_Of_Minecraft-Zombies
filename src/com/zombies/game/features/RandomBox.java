@@ -1,5 +1,6 @@
 package com.zombies.game.features;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -8,23 +9,20 @@ import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
 import com.zombies.commands.CommandUtil;
 import com.zombies.game.Game;
 import com.zombies.guns.Gun;
 import com.zombies.guns.GunManager;
 import com.zombies.guns.GunType;
 
-public class RandomBox
-{
-	private final COMZombies plugin;
+public class RandomBox {
+	private final COMZombiesMain plugin;
 	private Location boxLoc;
 	private Game boxGame;
 	private String boxNum;
 	private int boxCost;
 	
-	public RandomBox(Location loc, Game game, COMZombies plugin, String key, int cost)
-	{
+	public RandomBox(Location loc, Game game, COMZombiesMain plugin, String key, int cost) {
 		this.plugin = plugin;
 		boxLoc = loc;
 		boxGame = game;
@@ -32,11 +30,9 @@ public class RandomBox
 		boxCost = cost;
 	}
 	
-	public void Start(final Player player, int PointsNeeded)
-	{
+	public void Start(final Player player, int PointsNeeded) {
 		if (!(plugin.manager.isPlayerInGame(player))) { return; }
-		if(!plugin.pointManager.canBuy(player, PointsNeeded))
-		{
+		if(!plugin.pointManager.canBuy(player, PointsNeeded)) {
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You don't have enough points!");
 			return;
 		}
@@ -50,22 +46,18 @@ public class RandomBox
 		int slot = manager.getCorrectSlot();
 		manager.removeGun(manager.getGun(slot));
 		manager.addGun(new Gun(gun, player, slot));
-		player.getLocation().getWorld().playSound(player.getLocation(), Sound.LAVA_POP, 1, 1);
+		player.getLocation().getWorld().playSound(player.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
 		plugin.pointManager.takePoints(player, PointsNeeded);
 		plugin.pointManager.notifyPlayer(player);
-		/*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
-		{
+		/*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			int time = 15;
 			Item temp = null;
 			Location loc = boxLoc.add(.5,.2,.5);
 			Game game = plugin.manager.getGame(player);
 			
-			public void run()
-			{
-				if (time != -1 && game.mode == ArenaStatus.INGAME)
-				{
-					if (time != 0 && game.mode == ArenaStatus.INGAME)
-					{
+			public void run() {
+				if (time != -1 && game.mode == ArenaStatus.INGAME) {
+					if (time != 0 && game.mode == ArenaStatus.INGAME) {
 						if (game == null) return;
 						GunType gun = plugin.possibleGuns.get(0);
 						int randID = (int) (Math.random() * plugin.possibleGuns.size() + 1);
@@ -79,8 +71,7 @@ public class RandomBox
 						temp.setVelocity(new Vector(0,0,0));
 						time--;
 					}
-					else
-					{
+					else {
 						time -= 1;
 					}
 				}
@@ -88,10 +79,8 @@ public class RandomBox
 		}, 0L, 3L);*/
 	}
 	
-	public void loadBox()
-	{
-		if(boxLoc == null)
-		{
+	public void loadBox() {
+		if(boxLoc == null) {
 			Bukkit.getServer().broadcastMessage("Mysterybox " + this.getName() + "Is broken and has no location!! what did you do!!");
 			return;
 		}
@@ -103,23 +92,19 @@ public class RandomBox
 		sign.update();
 	}
 	
-	public void removeBox()
-	{
+	public void removeBox() {
 		boxLoc.getBlock().setType(Material.AIR);
 	}
 	
-	public Location getLocation()
-	{
+	public Location getLocation() {
 		return boxLoc;
 	}
 	
-	public String getName()
-	{
+	public String getName() {
 		return boxNum;
 	}
 	
-	public int getCost()
-	{
+	public int getCost() {
 		return boxCost;
 	}
 }

@@ -4,19 +4,17 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 import com.zombies.game.Game;
 import com.zombies.game.features.PerkType;
 
-public class GunManager
-{
+public class GunManager {
 
 	private ArrayList<Gun> guns = new ArrayList<Gun>();
 	private Player player;
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
-	public GunManager(COMZombies plugin, Player player)
-	{
+	public GunManager(COMZombiesMain plugin, Player player) {
 		this.plugin = plugin;
 		this.player = player;
 	}
@@ -24,8 +22,7 @@ public class GunManager
 	/**
 	 * @return List of guns in the manager
 	 */
-	public ArrayList<Gun> getGuns()
-	{
+	public ArrayList<Gun> getGuns() {
 		return guns;
 	}
 
@@ -37,8 +34,7 @@ public class GunManager
 	 *            : Gun to check if being reloaded
 	 * @return: Is the @param reloading?
 	 */
-	public boolean isReloading(Gun gun)
-	{
+	public boolean isReloading(Gun gun) {
 		if (guns.contains(gun)) return gun.isReloading();
 		return false;
 	}
@@ -48,33 +44,25 @@ public class GunManager
 	 * 
 	 * @return: Slot to put a gun in.
 	 */
-	public int getCorrectSlot()
-	{
+	public int getCorrectSlot() {
 		int current = player.getInventory().getHeldItemSlot();
-		if (plugin.manager.isPlayerInGame(player))
-		{
+		if (plugin.manager.isPlayerInGame(player)) {
 			Game game = plugin.manager.getGame(player);
-			if (game.perkManager.hasPerk(player, PerkType.MULE_KICK))
-			{
+			if (game.perkManager.hasPerk(player, PerkType.MULE_KICK)) {
 				if (current > 3)
-				{
 					current = 3;
-				}
+
 				if (current < 1)
-				{
 					current = 1;
-				}
+
 			}
-			else
-			{
+			else {
 				if (current > 2)
-				{
 					current = 2;
-				}
+
 				if (current < 1)
-				{
 					current = 1;
-				}
+
 			}
 		}
 		return current;
@@ -86,9 +74,7 @@ public class GunManager
 	 * @param gun
 	 *            : Gun to add
 	 */
-	@SuppressWarnings("deprecation")
-	public void addGun(Gun gun)
-	{
+	public void addGun(Gun gun) {
 		guns.add(gun);
 		player.updateInventory();
 	}
@@ -98,10 +84,8 @@ public class GunManager
 	 * 
 	 * @return if the item in the players hand is a gun.
 	 */
-	public boolean isGun()
-	{
-		for (Gun gun : guns)
-		{
+	public boolean isGun() {
+		for (Gun gun : guns) {
 			if (gun.getSlot() == player.getInventory().getHeldItemSlot()) { return true; }
 		}
 		return false;
@@ -114,10 +98,8 @@ public class GunManager
 	 *            : Slot number gun is located
 	 * @return: Gun held in that slot
 	 */
-	public Gun getGun(int slot)
-	{
-		for (Gun gun : guns)
-		{
+	public Gun getGun(int slot) {
+		for (Gun gun : guns) {
 			if (gun.getSlot() == slot) { return gun; }
 		}
 		return null;
@@ -129,18 +111,14 @@ public class GunManager
 	 * @param gun
 	 *            : Gun to remove from the list.
 	 */
-	public void removeGun(Gun gun)
-	{
-		if (guns.contains(gun))
-		{
+	public void removeGun(Gun gun) {
+		if (guns.contains(gun)) {
 			guns.remove(gun);
 		}
 	}
 
-	public boolean hasGun(GunType gun)
-	{
-		for (Gun g : guns)
-		{
+	public boolean hasGun(GunType gun) {
+		for (Gun g : guns) {
 			if (g.getType().equals(gun)) { return true; }
 		}
 		return false;

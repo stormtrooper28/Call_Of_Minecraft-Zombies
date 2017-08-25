@@ -1,47 +1,36 @@
 package com.zombies.commands;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 
-public class KickCommand implements SubCommand
-{
+public class KickCommand implements SubCommand {
 
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
-	public KickCommand(ZombiesCommand zombiesCommand)
-	{
+	public KickCommand(ZombiesCommand zombiesCommand) {
 		plugin = zombiesCommand.plugin;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onCommand(Player player, String[] args)
-	{
-		if (player.hasPermission("zombies.kick") || player.hasPermission("zombies.admin"))
-		{
-			if (args.length == 1)
-			{
+	public boolean onCommand(Player player, String[] args) {
+		if (player.hasPermission("zombies.kick") || player.hasPermission("zombies.admin")) {
+			if (args.length == 1) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify a player to kick!");
 				return true;
 			}
-			else
-			{
+			else {
 				String toKick = args[1];
-				if (Bukkit.getPlayer(toKick) != null)
-				{
+				if (Bukkit.getPlayer(toKick) != null) {
 					Player kick = Bukkit.getPlayer(toKick);
-					if (plugin.manager.isPlayerInGame(kick))
-					{
+					if (plugin.manager.isPlayerInGame(kick)) {
 						Game game = plugin.manager.getGame(kick);
-						if (game.mode != ArenaStatus.DISABLED)
-						{
-							if (kick.equals(player))
-							{
+						if (game.mode != ArenaStatus.DISABLED) {
+							if (kick.equals(player)) {
 								CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You may not kick yourself! " + ChatColor.GOLD + "Type /z leave to leave!");
 								return true;
 							}
@@ -49,27 +38,23 @@ public class KickCommand implements SubCommand
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You kicked " + ChatColor.GOLD + kick.getName() + ChatColor.RED + " from the arena " + ChatColor.GOLD + game.getName() + ChatColor.RED + "!");
 							return true;
 						}
-						else
-						{
+						else {
 							CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "The arena that the player has a status of " + game.mode.toString() + "!");
 							return true;
 						}
 					}
-					else
-					{
+					else {
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "This player is not contained in any arena!");
 						return true;
 					}
 				}
-				else
-				{
+				else {
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "There is no player called " + args[1] + "!");
 					return true;
 				}
 			}
 		}
-		else
-		{
+		else {
 			plugin.command.noPerms(player, "kick a player");
 		}
 		return false;

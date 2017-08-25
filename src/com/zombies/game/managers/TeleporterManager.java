@@ -6,56 +6,45 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 
-public class TeleporterManager
-{	
-	private COMZombies plugin;
+public class TeleporterManager {
+	private COMZombiesMain plugin;
 	private Game game;
 	
 	private HashMap<String, ArrayList<Location>> teleporters = new HashMap<String, ArrayList<Location>>();
 	
-	public TeleporterManager(COMZombies plugin, Game game)
-	{
+	public TeleporterManager(COMZombiesMain plugin, Game game) {
 		this.plugin = plugin;
 		this.game = game;
 	}
 	
-	public void loadAllTeleportersToGame()
-	{
+	public void loadAllTeleportersToGame() {
 		CustomConfig config = plugin.configManager.getConfig("ArenaConfig");
 		String location = game.getName() + ".Teleporters";
-		try
-		{
-			for (String key : config.getConfigurationSection(location).getKeys(false))
-			{
+		if(config.contains(location))
+			for (String key : config.getConfigurationSection(location).getKeys(false)) {
 				double x = config.getDouble(game.getName() + ".Teleporters." + key + ".x");
 				double y = config.getDouble(game.getName() + ".Teleporters." + key + ".y");
 				double z = config.getDouble(game.getName() + ".Teleporters." + key + ".z");
 				float pitch = config.getLong(game.getName() + ".Teleporters." + key + ".pitch");
 				float yaw = config.getLong(game.getName() + ".Teleporters." + key + ".yaw");
 				ArrayList<Location> temp = new ArrayList<Location>();
-				if(teleporters.containsKey(key))
-				{
+				if(teleporters.containsKey(key)) {
 					temp.addAll(teleporters.get(key));
 				}
 				temp.add( new Location(game.getWorld(), x, y, z, yaw, pitch));
 				teleporters.put(key,temp);
 			}
-		} catch (NullPointerException e)
-		{
-		}
 	}
 	
-	public void saveTeleporterSpot(String teleName, Location to)
-	{
+	public void saveTeleporterSpot(String teleName, Location to) {
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		ArrayList<Location> temp = new ArrayList<Location>();
 		teleName = teleName.toLowerCase();
-		if(teleporters.containsKey(teleName))
-		{
+		if(teleporters.containsKey(teleName)) {
 			temp.addAll(teleporters.get(teleName));
 		}
 		temp.add(to);
@@ -76,26 +65,22 @@ public class TeleporterManager
 		conf.saveConfig();
 	}
 	
-	public void removedTeleporter(String teleName, Player player)
-	{
+	public void removedTeleporter(String teleName, Player player) {
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		teleName = teleName.toLowerCase();
-		if(teleporters.containsKey(teleName))
-		{
+		if(teleporters.containsKey(teleName)) {
 			teleporters.remove(teleName);
 			
 			conf.set(game.getName() + ".Teleporters." + teleName, null);
 			
 			conf.saveConfig();
 		}
-		else
-		{
+		else {
 			player.sendMessage("That is not a valid teleporter name!");
 		}
 	}
 	
-	public HashMap<String, ArrayList<Location>> getTeleporters()
-	{
+	public HashMap<String, ArrayList<Location>> getTeleporters() {
 		return teleporters;
 	}
 }

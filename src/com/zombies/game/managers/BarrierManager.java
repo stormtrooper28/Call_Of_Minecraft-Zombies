@@ -7,34 +7,28 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 import com.zombies.config.CustomConfig;
 import com.zombies.game.Game;
 import com.zombies.game.Game.ArenaStatus;
 import com.zombies.game.features.Barrier;
 import com.zombies.spawning.SpawnPoint;
 
-public class BarrierManager
-{
-	private COMZombies plugin;
+public class BarrierManager {
+	private COMZombiesMain plugin;
 	private Game game;
 	private ArrayList<Barrier> barriers = new ArrayList<Barrier>();
 	
-	public BarrierManager(COMZombies plugin, Game game)
-	{
+	public BarrierManager(COMZombiesMain plugin, Game game) {
 		this.plugin = plugin;
 		this.game = game;
 	}
-	
-	@SuppressWarnings("deprecation")
-	public void loadAllBarriersToGame()
-	{
+
+	public void loadAllBarriersToGame() {
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 		barriers.clear();
-		try
-		{
-			for (String key : conf.getConfigurationSection(game.getName() + ".Barriers").getKeys(false))
-			{
+		if(conf.contains(game.getName() + ".Barriers"))
+			for (String key : conf.getConfigurationSection(game.getName() + ".Barriers").getKeys(false)) {
 				double x = conf.getDouble(game.getName() + ".Barriers." + key + ".x");
 				double y = conf.getDouble(game.getName() + ".Barriers." + key + ".y");
 				double z = conf.getDouble(game.getName() + ".Barriers." + key + ".z");
@@ -42,7 +36,7 @@ public class BarrierManager
 				int number = Integer.parseInt(key);
 				Barrier barrier = new Barrier(loc, loc.getWorld().getBlockAt(loc), number, game);
 				
-				loc.getBlock().setTypeId(conf.getInt(game.getName() + ".Barriers." + key + ".bb"));
+				loc.getBlock().setType(Material.matchMaterial(conf.getString(game.getName() + ".Barriers." + key + ".bb")));
 				
 				double rx = conf.getDouble(game.getName() + ".Barriers." + key + ".rx");
 				double ry = conf.getDouble(game.getName() + ".Barriers." + key + ".ry");
@@ -56,63 +50,46 @@ public class BarrierManager
 				
 				barriers.add(barrier);
 			}
-		}
-		catch (NullPointerException e)
-		{}
 	}
 	
-	public Barrier getBarrier(Location loc)
-	{
-		for (Barrier b : barriers)
-		{
-			if (b.getLocation().equals(loc))
-			{
+	public Barrier getBarrier(Location loc) {
+		for (Barrier b : barriers) {
+			if (b.getLocation().equals(loc)) {
 				return b;
 			}
 		}
 		return null;
 	}
 	
-	public Barrier getBarrier(int num)
-	{
-		for (Barrier b : barriers)
-		{
-			if (b.getNum() == num)
-			{
+	public Barrier getBarrier(int num) {
+		for (Barrier b : barriers) {
+			if (b.getNum() == num) {
 				return b;
 			}
 		}
 		return null;
 	}
 	
-	public Barrier getBarrierFromRepair(Location loc)
-	{
-		for (Barrier b : barriers)
-		{
-			if (b.getRepairLoc().equals(loc))
-			{
+	public Barrier getBarrierFromRepair(Location loc) {
+		for (Barrier b : barriers) {
+			if (b.getRepairLoc().equals(loc)) {
 				return b;
 			}
 		}
 		return null;
 	}
 	
-	public Barrier getBarrier(SpawnPoint p)
-	{
-		for (Barrier b : barriers)
-		{
-			if (b.getSpawnPoint().getLocation().equals(p.getLocation()))
-			{
+	public Barrier getBarrier(SpawnPoint p) {
+		for (Barrier b : barriers) {
+			if (b.getSpawnPoint().getLocation().equals(p.getLocation())) {
 				return b;
 			}
 		}
 		return null;
 	}
 	
-	public void removeBarrier(Player player, Barrier barrier)
-	{
-		if (barriers.contains(barrier))
-		{
+	public void removeBarrier(Player player, Barrier barrier) {
+		if (barriers.contains(barrier)) {
 			CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
 			conf.set(game.getName() + ".Barriers." + barrier.getNum(), null);
 			conf.saveConfig();
@@ -122,23 +99,17 @@ public class BarrierManager
 			barriers.remove(barrier);
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
-	public void addBarrier(Barrier barrier)
-	{
+
+	public void addBarrier(Barrier barrier) {
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING)
-		{
+		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING) {
 			boolean same = false;
-			for (Barrier b : barriers)
-			{
-				if (b.getLocation().equals(b.getLocation()))
-				{
+			for (Barrier b : barriers) {
+				if (b.getLocation().equals(b.getLocation())) {
 					same = true;
 				}
 			}
-			if (!same)
-			{
+			if (!same) {
 				Location loc = barrier.getLocation();
 				Location loc2 = barrier.getRepairLoc();
 				SpawnPoint sp = barrier.getSpawnPoint();
@@ -151,30 +122,24 @@ public class BarrierManager
 				conf.set(game.getName() + ".Barriers." + name + ".ry", loc2.getBlockY());
 				conf.set(game.getName() + ".Barriers." + name + ".rz", loc2.getBlockZ());
 				conf.set(game.getName() + ".Barriers." + name + ".sp", sp.getName());
-				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getTypeId());
+				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType());
 				conf.set(game.getName() + ".Barriers." + name + ".reward", barrier.getReward());
 				conf.saveConfig();
 				barriers.add(barrier);
 			}
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
-	public void UpdateBarrier(Barrier barrier)
-	{
+
+	public void UpdateBarrier(Barrier barrier) {
 		CustomConfig conf = plugin.configManager.getConfig("ArenaConfig");
-		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING)
-		{
+		if (game.mode == ArenaStatus.DISABLED || game.mode == ArenaStatus.WAITING) {
 			boolean same = false;
-			for (Barrier b : barriers)
-			{
-				if (b.getLocation().equals(b.getLocation()))
-				{
+			for (Barrier b : barriers) {
+				if (b.getLocation().equals(b.getLocation())) {
 					same = true;
 				}
 			}
-			if (!same)
-			{
+			if (!same) {
 				Location loc = barrier.getLocation();
 				Location loc2 = barrier.getRepairLoc();
 				SpawnPoint sp = barrier.getSpawnPoint();
@@ -186,7 +151,7 @@ public class BarrierManager
 				conf.set(game.getName() + ".Barriers." + name + ".ry", loc2.getBlockY());
 				conf.set(game.getName() + ".Barriers." + name + ".rz", loc2.getBlockZ());
 				conf.set(game.getName() + ".Barriers." + name + ".sp", sp.getNumber());
-				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getTypeId());
+				conf.set(game.getName() + ".Barriers." + name + ".bb", barrier.getBlock().getType());
 				conf.set(game.getName() + ".Barriers." + name + ".reward", barrier.getReward());
 				conf.saveConfig();
 				barriers.add(barrier);
@@ -194,35 +159,26 @@ public class BarrierManager
 		}
 	}
 	
-	public ArrayList<Barrier> getBrriers()
-	{
+	public ArrayList<Barrier> getBarriers() {
 		return barriers;
 	}
 	
-	public int getTotalBarriers()
-	{
+	public int getTotalBarriers() {
 		return barriers.size();
 	}
 	
-	public Game getGame()
-	{
+	public Game getGame() {
 		return game;
 	}
 	
-	public int getNextBarrierNumber()
-	{
+	public int getNextBarrierNumber() {
 		int a = 0;
-		while (this.getBarrier(a) != null)
-		{
-			a++;
-		}
+		while (this.getBarrier(a++) != null);
 		return a;
 	}
 	
-	public void unloadAllBarriers()
-	{
-		for (Barrier b : barriers)
-		{
+	public void unloadAllBarriers() {
+		for (Barrier b : barriers) {
 			b.repairFull();
 		}
 	}

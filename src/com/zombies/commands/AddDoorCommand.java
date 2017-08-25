@@ -1,50 +1,41 @@
 package com.zombies.commands;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.zombies.COMZombies;
 import com.zombies.game.Game;
 import com.zombies.game.features.Door;
 import com.zombies.spawning.SpawnPoint;
 
-public class AddDoorCommand implements SubCommand
-{
+public class AddDoorCommand implements SubCommand {
 
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
-	public AddDoorCommand(ZombiesCommand cmd)
-	{
+	public AddDoorCommand(ZombiesCommand cmd) {
 		plugin = cmd.plugin;
 	}
 
-	public boolean onCommand(Player player, String[] args)
-	{
-		if (player.hasPermission("zombies.adddoor") || player.hasPermission("zombies.admin"))
-		{
-			if (args.length == 1)
-			{
+	public boolean onCommand(Player player, String[] args) {
+		if (player.hasPermission("zombies.adddoor") || player.hasPermission("zombies.admin")) {
+			if (args.length == 1) {
 				CommandUtil.sendMessageToPlayer(player, "Please specify an arena to add a door to!");
 			}
-			else
-			{
-				if (plugin.manager.isValidArena(args[1]))
-				{
+			else {
+				if (plugin.manager.isValidArena(args[1])) {
 					Game game = plugin.manager.getGame(args[1]);
 					Door door = new Door(plugin, game, game.doorManager.getCurrentDoorNumber());
 					game.doorManager.addDoor(door);
 					plugin.isCreatingDoor.put(player, door);
-					for (SpawnPoint point : game.spawnManager.getPoints())
-					{
+					for (SpawnPoint point : game.spawnManager.getPoints()) {
 						Block block = point.getLocation().getBlock();
 						point.setMaterial(block.getType());
 						block.setType(Material.ENDER_PORTAL_FRAME);
 					}
-					if (!player.getInventory().contains(Material.WOOD_SWORD))
-					{
+					if (!player.getInventory().contains(Material.WOOD_SWORD)) {
 						player.getInventory().addItem(new ItemStack(Material.WOOD_SWORD));
 					}
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------" + ChatColor.DARK_RED + "Door Setup" + ChatColor.RED + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------");
@@ -55,16 +46,14 @@ public class AddDoorCommand implements SubCommand
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Lastly! In chat, type a price for the door in chat.");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
 				}
-				else
-				{
+				else {
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "That is not a valid arena!");
 					return true;
 				}
 			}
 			return true;
 		}
-		else
-		{
+		else {
 			plugin.command.noPerms(player, "add a door");
 			return true;
 		}

@@ -3,32 +3,26 @@ package com.zombies.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 import com.zombies.game.Game;
 
-public class EditCommand implements SubCommand
-{
+public class EditCommand implements SubCommand {
 
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
-	public EditCommand(ZombiesCommand cmd)
-	{
+	public EditCommand(ZombiesCommand cmd) {
 		plugin = cmd.plugin;
 
 	}
 
-	public boolean onCommand(Player player, String[] args)
-	{
-		if (player.hasPermission("zombies.editarena") || player.hasPermission("zombies.admin"))
-		{
-			if (args.length == 1)
-			{
+	public boolean onCommand(Player player, String[] args) {
+		if (player.hasPermission("zombies.editarena") || player.hasPermission("zombies.admin")) {
+			if (args.length == 1) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please specify an arena to edit!");
 				return true;
 			}
 			String arena = args[1];
-			if (plugin.manager.isValidArena(arena))
-			{
+			if (plugin.manager.isValidArena(arena)) {
 				Game game = plugin.manager.getGame(arena);
 				game.setDisabled();
 				plugin.isArenaSetup.put(player, game);
@@ -39,13 +33,11 @@ public class EditCommand implements SubCommand
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type /zombies cancel arenasetup to cancel this operation.");
 				return true;
 			}
-			else
-			{
+			else {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + arena + " is not a valid arena!");
 			}
 		}
-		else
-		{
+		else {
 			plugin.command.noPerms(player, "edit this arena");
 			return true;
 		}

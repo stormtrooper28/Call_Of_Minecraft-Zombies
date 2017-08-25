@@ -3,6 +3,7 @@ package com.zombies.game.features;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,12 +11,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 
-import com.zombies.COMZombies;
 import com.zombies.game.Game;
 import com.zombies.spawning.SpawnPoint;
 
-public class Barrier implements Runnable 
-{
+public class Barrier implements Runnable  {
 	
 	private Location loc;
 	private Block block;
@@ -36,8 +35,7 @@ public class Barrier implements Runnable
 	private List<Entity> ents = new ArrayList<Entity>();
 	private List<Entity> entsToAdd = new ArrayList<Entity>();
 	
-	public Barrier(Location l, Block b, int n, Game game)
-	{
+	public Barrier(Location l, Block b, int n, Game game) {
 		loc = l;
 		block = b;
 		blockMat = b.getType();
@@ -46,8 +44,7 @@ public class Barrier implements Runnable
 		this.game = game;
 	}
 	
-	public boolean damage()
-	{
+	public boolean damage() {
 		stage++;
 		
 		if(stage > 5)
@@ -55,15 +52,12 @@ public class Barrier implements Runnable
 		
 		game.updateBarrierDamage(stage, block);
 		
-		if(stage >= 5)
-		{
+		if(stage >= 5) {
 			game.getWorld().getBlockAt(loc).setType(Material.AIR);
 			return true;
 		}
-		else
-		{
-			if(stage > -1)
-			{
+		else {
+			if(stage > -1) {
 				game.getWorld().getBlockAt(this.repairLoc).setType(Material.SIGN_POST);
 				Sign sign = (Sign) game.getWorld().getBlockAt(this.repairLoc).getState();
 				sign.setLine(0, "[BarrierRepair]");
@@ -76,8 +70,7 @@ public class Barrier implements Runnable
 		}
 	}
 	
-	public boolean repair()
-	{
+	public boolean repair() {
 		stage--;
 		
 		if(stage < -1)
@@ -85,8 +78,7 @@ public class Barrier implements Runnable
 		
 		game.updateBarrierDamage(stage, block);
 		
-		if(stage > -1)
-		{
+		if(stage > -1) {
 			game.getWorld().getBlockAt(this.repairLoc).setType(Material.SIGN_POST);
 			Sign sign = (Sign) game.getWorld().getBlockAt(this.repairLoc).getState();
 			sign.setLine(0, "[BarrierRepair]");
@@ -95,21 +87,17 @@ public class Barrier implements Runnable
 			sign.setLine(3, "barrier");
 			sign.update();
 		}
-		else
-		{
+		else {
 			game.getWorld().getBlockAt(this.repairLoc).setType(Material.AIR);
 		}
 		
 		if(game.getWorld().getBlockAt(loc).getType().equals(Material.AIR))
 			game.getWorld().getBlockAt(loc).setType(blockMat);
-		if(stage <= -1)
-			return true;
-		else
-			return false;
+
+		return stage <= -1;
 	}
 	
-	public void repairFull()
-	{
+	public void repairFull() {
 		stage = -1;
 		
 		game.updateBarrierDamage(-1, block);
@@ -122,106 +110,89 @@ public class Barrier implements Runnable
 		this.breaking = false;
 	}
 	
-	public Location getLocation()
-	{
+	public Location getLocation() {
 		return loc;
 	}
 	
-	public Block getBlock()
-	{
+	public Block getBlock() {
 		return block;
 	}
 	
-	public int getStage()
-	{
+	public int getStage() {
 		return stage;
 	}
 	
-	public void assingSpawnPoint(SpawnPoint sp)
-	{
+	public void assingSpawnPoint(SpawnPoint sp) {
 		spawn = sp;
 	}
 	
-	public SpawnPoint getSpawnPoint()
-	{
+	public SpawnPoint getSpawnPoint() {
 		return spawn;
 	}
 	
-	public int getNum()
-	{
+	public int getNum() {
 		return number;
 	}
 	
-	public int getReward()
-	{
+	public int getReward() {
 		return reward;
 	}
 	
-	public void setReward(int reward)
-	{
+	public void setReward(int reward) {
 		this.reward = reward;
 	}
 	
-	public Location getRepairLoc()
-	{
+	public Location getRepairLoc() {
 		return repairLoc;
 	}
 	
-	public void setRepairLoc(Location repairLoc)
-	{
+	public void setRepairLoc(Location repairLoc) {
 		this.repairLoc = repairLoc;
 	}
 	
-	public Game getGame()
-	{
+	public Game getGame() {
 		return game;
 	}
 	
-	public void update()
-	{
-		if(ents.size() > 0)
-		{
-			if(!this.damage())
-			{
-				for(int i = 0; i < ents.size(); i++)
-				{
+	public void update() {
+
+		Bukkit.broadcastMessage("barrier.update_0");
+		if(ents.size() > 0) {
+			if(!this.damage()) {
+				for(int i = 0; i < ents.size(); i++) {
 					Entity ent = ents.get(i);
-					if(ent.isDead())
-					{
+					if(ent.isDead()) {
 						ents.remove(ent);
 						i--;
 					}
 				}
 				ents.addAll(entsToAdd);
 				entsToAdd.clear();
-				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombiesMain.getInstance(), this, 3 * 20L);
 			}
 			else
 				this.breaking = false;
 		}
-		else if(entsToAdd.size() > 0)
-		{
+		else if(entsToAdd.size() > 0) {
 			ents.addAll(entsToAdd);
 			entsToAdd.clear();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombiesMain.getInstance(), this, 3 * 20L);
 		}
 		else
 			this.breaking = false;
+		Bukkit.broadcastMessage("barrier.update_1");
 	}
 	
-	public void initBarrier(Entity ent)
-	{
+	public void initBarrier(Entity ent) {
 		entsToAdd.add(ent);
-		if(this.stage < 6 && !breaking)
-		{
+		if(this.stage < 6 && !breaking) {
 			this.breaking = true;
-			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombies.getInstance(), this, 3 * 20L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(COMZombiesMain.getInstance(), this, 3 * 20L);
 		}
 	}
 	
 	@Override
-	public void run()
-	{
+	public void run() {
 		update();
 	}
 }

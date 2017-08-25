@@ -1,5 +1,6 @@
 package com.zombies.game;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,12 +16,10 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 /**
  * Class attempting to stop anything from griefing arenas.
  */
-import com.zombies.COMZombies;
 
-public class ArenaAntiBreak implements Listener
-{
+public class ArenaAntiBreak implements Listener {
 
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
 	/**
 	 * Creates this listener and listens for any of the following methods.
@@ -29,8 +28,7 @@ public class ArenaAntiBreak implements Listener
 	 * @param zombies
 	 *            plugin
 	 */
-	public ArenaAntiBreak(COMZombies pl)
-	{
+	public ArenaAntiBreak(COMZombiesMain pl) {
 		plugin = pl;
 	}
 
@@ -41,10 +39,8 @@ public class ArenaAntiBreak implements Listener
 	 *            break event
 	 */
 	@EventHandler
-	public void blockBreak(BlockBreakEvent event)
-	{
-		if (plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+	public void blockBreak(BlockBreakEvent event) {
+		if (plugin.manager.isLocationInGame(event.getBlock().getLocation())) {
 			event.setCancelled(true);
 		}
 	}
@@ -56,10 +52,8 @@ public class ArenaAntiBreak implements Listener
 	 *            burn event
 	 */
 	@EventHandler
-	public void blockBurn(BlockBurnEvent event)
-	{
-		if (plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+	public void blockBurn(BlockBurnEvent event) {
+		if (plugin.manager.isLocationInGame(event.getBlock().getLocation())) {
 			event.setCancelled(true);
 		}
 	}
@@ -72,10 +66,8 @@ public class ArenaAntiBreak implements Listener
 	 *            form event
 	 */
 	@EventHandler
-	public void blockForm(BlockFormEvent event)
-	{
-		if (plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+	public void blockForm(BlockFormEvent event) {
+		if (plugin.manager.isLocationInGame(event.getBlock().getLocation())) {
 			event.setCancelled(true);
 		}
 	}
@@ -88,10 +80,8 @@ public class ArenaAntiBreak implements Listener
 	 *            ignite event
 	 */
 	@EventHandler
-	public void blockIgnite(BlockIgniteEvent event)
-	{
-		if (plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+	public void blockIgnite(BlockIgniteEvent event) {
+		if (plugin.manager.isLocationInGame(event.getBlock().getLocation())) {
 			event.setCancelled(true);
 		}
 	}
@@ -104,10 +94,8 @@ public class ArenaAntiBreak implements Listener
 	 *            change block event
 	 */
 	@EventHandler
-	public void entityChangeBlock(EntityChangeBlockEvent event)
-	{
-		if (plugin.manager.isLocationInGame(event.getBlock().getLocation()))
-		{
+	public void entityChangeBlock(EntityChangeBlockEvent event) {
+		if (plugin.manager.isLocationInGame(event.getBlock().getLocation())) {
 			event.setCancelled(true);
 		}
 	}
@@ -120,10 +108,8 @@ public class ArenaAntiBreak implements Listener
 	 *            explode event
 	 */
 	@EventHandler
-	public void entityExplode(EntityExplodeEvent event)
-	{
-		if (plugin.manager.isLocationInGame(event.getLocation()))
-		{
+	public void entityExplode(EntityExplodeEvent event) {
+		if (plugin.manager.isLocationInGame(event.getLocation())) {
 			event.setCancelled(true);
 		}
 	}
@@ -135,11 +121,9 @@ public class ArenaAntiBreak implements Listener
 	 *                    EntityEvent
 	 */
 	@EventHandler
-    public void onBlockHangingBreak(HangingBreakByEntityEvent event)
-    {
+    public void onBlockHangingBreak(HangingBreakByEntityEvent event) {
 		Player player = (Player) event.getRemover();
-		if (plugin.manager.isPlayerInGame(player))
-		{ 
+		if (plugin.manager.isPlayerInGame(player)) {
 			event.setCancelled(true);
 		}
     }
@@ -151,10 +135,8 @@ public class ArenaAntiBreak implements Listener
 	 *            empty event
 	 */
 	@EventHandler
-	public void BucketEmptyEvent(PlayerBucketEmptyEvent event)
-	{
-		if (plugin.manager.isLocationInGame(event.getBlockClicked().getLocation()))
-		{
+	public void BucketEmptyEvent(PlayerBucketEmptyEvent event) {
+		if (plugin.manager.isLocationInGame(event.getBlockClicked().getLocation())) {
 			event.setCancelled(true);
 		}
 	}

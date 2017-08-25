@@ -5,59 +5,48 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
+import com.zombies.COMZombiesMain;
 import com.zombies.game.Game;
 
-public class PointManager
-{
+public class PointManager {
 
-	private COMZombies plugin;
-	private ArrayList<Player> allPlayers = new ArrayList<Player>();
-	private HashMap<Player, PlayerPoints> playersPoints = new HashMap<Player, PlayerPoints>();
+	private COMZombiesMain plugin;
+	private static ArrayList<Player> allPlayers = new ArrayList<>();
+	private static HashMap<Player, PlayerPoints> playersPoints = new HashMap<>();
 
-	public PointManager(COMZombies p)
-	{
+	public PointManager(COMZombiesMain p) {
 		plugin = p;
 	}
 
-	public void initalizePlayer(Player player)
-	{
+	public void initializePlayer(Player player) {
 		allPlayers.add(player);
 		playersPoints.put(player, new PlayerPoints(plugin, player, 500));
 	}
 
-	public boolean canBuy(Player player, int required)
-	{
+	public boolean canBuy(Player player, int required) {
 		if (getPlayerPoints(player).canWithdraw(required)) { return true; }
 		return false;
 	}
 
-	public PlayerPoints getPlayerPoints(Player player)
-	{
-		if (allPlayers.contains(player))
-		{
+	public PlayerPoints getPlayerPoints(Player player) {
+		if (allPlayers.contains(player)) {
 			return playersPoints.get(player);
 		}
-		else
-		{
+		else {
 			allPlayers.add(player);
-			if (!playersPoints.containsKey(player))
-			{
-				initalizePlayer(player);
+			if (!playersPoints.containsKey(player)) {
+				initializePlayer(player);
 			}
 			return playersPoints.get(player);
 		}
 	}
 
-	public void addPoints(Player player, int amount)
-	{
-		if (allPlayers.contains(player) && playersPoints.containsKey(player))
-		{
+	public void addPoints(Player player, int amount) {
+		if (allPlayers.contains(player) && playersPoints.containsKey(player)) {
 			playersPoints.get(player).addPoints(amount);
 		}
-		else
-		{
-			initalizePlayer(player);
+		else {
+			initializePlayer(player);
 			playersPoints.get(player).addPoints(amount);
 		}
 	}
@@ -67,69 +56,55 @@ public class PointManager
 	 * 
 	 * @param player
 	 */
-	public void notifyPlayer(Player player)
-	{
+	public void notifyPlayer(Player player) {
 		Game game = plugin.manager.getGame(player);
 		if (game == null) return;
 		game.scoreboard.update();
 	}
 
-	public void takePoints(Player player, int amount)
-	{
-		if (allPlayers.contains(player))
-		{
+	public void takePoints(Player player, int amount) {
+		if (allPlayers.contains(player)) {
 			playersPoints.get(player).takePoints(amount);
 		}
-		else
-		{
-			initalizePlayer(player);
+		else {
+			initializePlayer(player);
 			playersPoints.get(player).takePoints(amount);
 		}
 	}
 
-	public void unloadPlayer(Player player)
-	{
-		if (playersPoints.containsKey(player))
-		{
+	public void unloadPlayer(Player player) {
+		if (playersPoints.containsKey(player)) {
 			playersPoints.remove(player);
 			allPlayers.remove(player);
 		}
 	}
 
-	public void playerLeaveGame(Player player)
-	{
-		if (playersPoints.containsKey(player))
-		{
+	public void playerLeaveGame(Player player) {
+		if (playersPoints.containsKey(player)) {
 			playersPoints.remove(player);
 		}
 	}
 
-	public int getPlayersPoints(Player player)
-	{
-		return playersPoints.get(player).getPoints();
+	public int getPlayersPoints(Player player) {
+		return playersPoints
+				.get(player)
+				.getPoints();
 	}
 
-	public void saveAll()
-	{
-		for (int i = 0; i < playersPoints.size(); i++)
-		{
+	public void saveAll() {
+		for (int i = 0; i < playersPoints.size(); i++) {
 			playersPoints.get(allPlayers.get(i)).storePoints();
 		}
 	}
 
-	public void clearGamePoints(Game game)
-	{
-		for (Player pl : game.players)
-		{
+	public void clearGamePoints(Game game) {
+		for (Player pl : game.players) {
 			playerLeaveGame(pl);
 		}
 	}
 
-	public void setPoints(Player player, int points)
-	{
-		if (playersPoints.containsKey(player))
-		{
-			playersPoints.get(player).setPoints(points);
-		}
+	public void setPoints(Player player, int points) {
+		if (playersPoints.containsKey(player)) playersPoints.get(player).setPoints(points);
+		else playersPoints.put(player, new PlayerPoints(plugin, player, points));
 	}
 }

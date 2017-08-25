@@ -1,46 +1,37 @@
 package com.zombies.commands;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
 import com.zombies.game.Game;
 import com.zombies.game.features.Barrier;
 
-public class RemoveBarrierCommand implements SubCommand
-{
+public class RemoveBarrierCommand implements SubCommand {
 	
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 	
-	public RemoveBarrierCommand(ZombiesCommand cmd)
-	{
+	public RemoveBarrierCommand(ZombiesCommand cmd) {
 		plugin = cmd.plugin;
 	}
 	
 	@Override
-	public boolean onCommand(Player player, String[] args)
-	{
-		if (player.hasPermission("zombies.removebarrier") || player.hasPermission("zombies.admin"))
-		{
-			if (args.length == 1)
-			{
+	public boolean onCommand(Player player, String[] args) {
+		if (player.hasPermission("zombies.removebarrier") || player.hasPermission("zombies.admin")) {
+			if (args.length == 1) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "Please specify an arena to remove a barrier from!");
 				return true;
 			}
-			else
-			{
-				if (plugin.manager.isValidArena(args[1]))
-				{
+			else {
+				if (plugin.manager.isValidArena(args[1])) {
 					Game game = plugin.manager.getGame(args[1]);
-					if (game.barrierManager.getTotalBarriers() == 0)
-					{
+					if (game.barrierManager.getTotalBarriers() == 0) {
 						CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + "This arena has no barriers!");
 						return true;
 					}
-					for (Barrier barrier : game.barrierManager.getBrriers())
-					{
+					for (Barrier barrier : game.barrierManager.getBarriers()) {
 						game.getWorld().getBlockAt(barrier.getRepairLoc()).setType(Material.SIGN_POST);
 						Sign sign = (Sign) game.getWorld().getBlockAt(barrier.getRepairLoc()).getState();
 						sign.setLine(0, "[BarrierRemove]");
@@ -56,15 +47,13 @@ public class RemoveBarrierCommand implements SubCommand
 					CommandUtil.sendMessageToPlayer(player, ChatColor.GOLD + "Break any sign that leads to a door to remove the barrier!");
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Type cancel to cancel this operation.");
 				}
-				else
-				{
+				else {
 					CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "" + ChatColor.BOLD + args[2] + " is not a valid arena!");
 					return true;
 				}
 			}
 		}
-		else
-		{
+		else {
 			plugin.command.noPerms(player, "remove this banner");
 			return false;
 		}

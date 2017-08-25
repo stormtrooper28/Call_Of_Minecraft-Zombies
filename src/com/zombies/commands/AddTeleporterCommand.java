@@ -1,35 +1,29 @@
 package com.zombies.commands;
 
+import com.zombies.COMZombiesMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.zombies.COMZombies;
 import com.zombies.game.Game;
 
-public class AddTeleporterCommand implements SubCommand
-{
+public class AddTeleporterCommand implements SubCommand {
 
-	private COMZombies plugin;
+	private COMZombiesMain plugin;
 
-	public AddTeleporterCommand(ZombiesCommand cmd)
-	{
+	public AddTeleporterCommand(ZombiesCommand cmd) {
 		plugin = cmd.plugin;
 	}
 
-	public boolean onCommand(Player player, String[] args)
-	{
-		if (player.hasPermission("zombies.createteleporter") || player.hasPermission("zombies.admin"))
-		{
+	public boolean onCommand(Player player, String[] args) {
+		if (player.hasPermission("zombies.createteleporter") || player.hasPermission("zombies.admin")) {
 			Location loc = player.getLocation();
 			Game game = plugin.manager.getGame(loc);
-			if (game == null)
-			{
+			if (game == null) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "You must be in an arena!");
 				return true;
 			}
-			if (args.length == 1)
-			{
+			if (args.length == 1) {
 				CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Please specify a teleporter name!");
 				return true;
 			}
@@ -37,9 +31,8 @@ public class AddTeleporterCommand implements SubCommand
 			CommandUtil.sendMessageToPlayer(player, ChatColor.RED + "Teleporter added for arena: " + ChatColor.GOLD + game.getName() + ChatColor.RED + "!");
 			return true;
 		}
-		else
-		{
-			COMZombies.getInstance().command.noPerms(player, "add a teleporter");
+		else {
+			COMZombiesMain.getInstance().command.noPerms(player, "add a teleporter");
 			return true;
 		}
 	}
